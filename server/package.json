@@ -1,0 +1,18 @@
+{
+  "name": "mochi-server",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "A tiny WebSocket chat server for the Mochi Android app.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node test.mjs"
+  },
+  "dependencies": {
+    "ws": "^8.18.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

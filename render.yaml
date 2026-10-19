@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: mochi
+    runtime: node
+    plan: free
+    rootDir: server
+    buildCommand: npm install
+    startCommand: node server.js
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_VERSION
+        value: "20"
+      - key: MAX_HISTORY
+        value: "300"
+      - key: MAX_UPLOAD_MB
+        value: "64"
