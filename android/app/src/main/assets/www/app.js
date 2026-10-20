@@ -237,6 +237,10 @@ function exportSettings() {
       accent: state.accent,
       customTheme: state.customTheme,
       customCss: state.customCss,
+      recipeId: state.recipeId,
+      recipeName: state.recipeName,
+      recipeCss: state.recipeCss,
+      bgGradient: state.bgGradient,
       bgImage: state.bgImage,
       bgOpacity: state.bgOpacity,
       bgBlur: state.bgBlur,
@@ -285,6 +289,12 @@ async function importSettingsFile(file) {
     if (safeHex(stored.accent)) state.accent = safeHex(stored.accent);
     if (stored.customTheme) state.customTheme = sanitizeThemeOverrides(stored.customTheme);
     if (typeof stored.customCss === "string") state.customCss = stored.customCss.slice(0, 8000);
+    if (typeof stored.recipeId === "string") state.recipeId = stored.recipeId.slice(0, 40);
+    if (typeof stored.recipeName === "string") state.recipeName = stored.recipeName.slice(0, 40);
+    if (typeof stored.recipeCss === "string") state.recipeCss = stored.recipeCss.slice(0, 8000);
+    if (Object.prototype.hasOwnProperty.call(stored, "bgGradient")) {
+      state.bgGradient = sanitizeGradient(stored.bgGradient);
+    }
     if (typeof stored.bgImage === "string" && stored.bgImage.startsWith("data:image")) state.bgImage = stored.bgImage;
     if (stored.bgOpacity != null) state.bgOpacity = clamp(Number(stored.bgOpacity) || 0, 0, 1);
     if (stored.bgBlur != null) state.bgBlur = clamp(Number(stored.bgBlur) || 0, 0, 20);
@@ -423,6 +433,7 @@ function init() {
   renderThemeGrid();
   renderAccentRow();
   renderStudioTokens();
+  renderRecipes();
   syncLookControls();
   applyLook();
   updateHeader();

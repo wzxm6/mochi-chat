@@ -1,0 +1,29 @@
+{
+  "kind": "mochi-recipe",
+  "version": 1,
+  "id": "friendship",
+  "name": "best friends",
+  "description": "mint, sunshine, inside jokes",
+  "theme": "slate",
+  "accent": "#3f8c8a",
+  "fontChoice": "friendly",
+  "shape": "round",
+  "pattern": "dots",
+  "textSize": "m",
+  "avatarShape": "squircle",
+  "noteTexture": true,
+  "avatar": "🌟",
+  "customTheme": {
+    "bg": "#f2f8f7",
+    "bg2": "#e3f1ef",
+    "surface": "#ffffff",
+    "surface2": "#f4faf9",
+    "ink": "#1e2e2d",
+    "ink2": "#4f6462",
+    "ink3": "#849795",
+    "line": "#d3e5e2",
+    "accent": "#3f8c8a"
+  },
+  "gradient": "linear-gradient(155deg, #f2f8f7 0%, #e3f1ef 50%, #fff6dd 100%)",
+  "css": ".topbar__title::after,\n.empty-state__title::after {\n  content: \" ✦\";\n  color: var(--accent);\n}\n.message__bubble {\n  border-width: 1.5px;\n}"
+}

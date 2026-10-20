@@ -1,0 +1,29 @@
+{
+  "kind": "mochi-recipe",
+  "version": 1,
+  "id": "islamic",
+  "name": "noor",
+  "description": "emerald, cream, a quiet gold light",
+  "theme": "sage",
+  "accent": "#2f8f7a",
+  "fontChoice": "editorial",
+  "shape": "soft",
+  "pattern": "stars",
+  "textSize": "m",
+  "avatarShape": "circle",
+  "noteTexture": true,
+  "avatar": "🌙",
+  "customTheme": {
+    "bg": "#f3f6f2",
+    "bg2": "#e7efe8",
+    "surface": "#ffffff",
+    "surface2": "#f6faf6",
+    "ink": "#1f2f2a",
+    "ink2": "#4f665c",
+    "ink3": "#83998e",
+    "line": "#d7e4da",
+    "accent": "#2f8f7a"
+  },
+  "gradient": "linear-gradient(155deg, #f3f6f2 0%, #e7efe8 60%, #f6f1e4 100%)",
+  "css": ".topbar {\n  box-shadow: inset 0 -2px 0 rgba(201, 162, 39, .35), var(--shadow-1);\n}\n.day-divider {\n  letter-spacing: .16em;\n}\n.message__bubble {\n  border-radius: 16px;\n}"
+}

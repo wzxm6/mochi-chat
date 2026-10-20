@@ -1,0 +1,29 @@
+{
+  "kind": "mochi-recipe",
+  "version": 1,
+  "id": "anime",
+  "name": "anime dusk",
+  "description": "pink twilight, manga sparkle",
+  "theme": "rose",
+  "accent": "#ff5c8a",
+  "fontChoice": "friendly",
+  "shape": "round",
+  "pattern": "stars",
+  "textSize": "m",
+  "avatarShape": "circle",
+  "noteTexture": true,
+  "avatar": "🌸",
+  "customTheme": {
+    "bg": "#fdf2f8",
+    "bg2": "#ffe4f1",
+    "surface": "#ffffff",
+    "surface2": "#fff7fb",
+    "ink": "#2a1b2e",
+    "ink2": "#6b4a68",
+    "ink3": "#a084a0",
+    "line": "#f3d3e6",
+    "accent": "#ff5c8a"
+  },
+  "gradient": "linear-gradient(155deg, #fdf2f8 0%, #ffe4f1 45%, #e9e4ff 100%)",
+  "css": ".topbar__title::after,\n.empty-state__title::after {\n  content: \" ✧\";\n  color: var(--accent);\n}\n.message__bubble {\n  border-width: 1.5px;\n}\n.day-divider {\n  letter-spacing: .14em;\n  text-transform: lowercase;\n}"
+}

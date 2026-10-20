@@ -1,0 +1,506 @@
+<!doctype html>
+<html lang="en" data-theme="paper" data-pattern="none" data-shape="soft" data-size="m" data-avatar="squircle">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#F4F1EA">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: blob: http: https:; media-src 'self' data: blob: http: https:; style-src 'self' 'unsafe-inline'; font-src 'self'; script-src 'self'; connect-src ws: wss: http: https:; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <title>Mochi</title>
+  <link rel="stylesheet" href="styles.css">
+  <style id="customCssStyle"></style>
+</head>
+<body>
+  <a class="skip-link" href="#chatScreen">Skip to chat</a>
+
+  <div class="bg-photo" id="bgPhoto" aria-hidden="true"></div>
+  <div class="ambient" aria-hidden="true">
+    <span class="ambient__blob ambient__blob--one"></span>
+    <span class="ambient__blob ambient__blob--two"></span>
+    <span class="ambient__blob ambient__blob--three"></span>
+  </div>
+  <div class="doodles" aria-hidden="true"></div>
+
+  <svg class="svg-defs" aria-hidden="true" focusable="false">
+    <defs>
+      <symbol id="mochiMascot" viewBox="0 0 120 120">
+        <ellipse class="mochi__shadow" cx="60" cy="104" rx="30" ry="6"/>
+        <g class="mochi__clip">
+          <circle cx="60" cy="25" r="7"/>
+          <circle class="mochi__clip-center" cx="60" cy="25" r="3"/>
+        </g>
+        <ellipse class="mochi__body" cx="60" cy="68" rx="42" ry="35"/>
+        <path class="mochi__highlight" d="M31 58c4-14 15-22 30-23"/>
+        <g class="mochi__eyes">
+          <circle cx="47" cy="68" r="4.3"/>
+          <circle cx="73" cy="68" r="4.3"/>
+        </g>
+        <path class="mochi__mouth" d="M54 79c3 4 9 4 12 0"/>
+        <circle class="mochi__sparkle" cx="100" cy="30" r="3"/>
+      </symbol>
+      <symbol id="icon-settings" viewBox="0 0 24 24"><path d="M12 15.5A3.5 3.5 0 1 0 12 8.5a3.5 3.5 0 0 0 0 7Z"/><path d="M19.4 13a7.6 7.6 0 0 0 0-2l2-1.5-2-3.4-2.3 1a7.6 7.6 0 0 0-1.7-1L15 3.6h-4l-.4 2.5a7.6 7.6 0 0 0-1.7 1l-2.3-1-2 3.4L6.6 11a7.6 7.6 0 0 0 0 2l-2 1.5 2 3.4 2.3-1c.5.4 1.1.7 1.7 1l.4 2.5h4l.4-2.5c.6-.3 1.2-.6 1.7-1l2.3 1 2-3.4Z"/></symbol>
+      <symbol id="icon-share" viewBox="0 0 24 24"><path d="M12 15V4"/><path d="m8 8 4-4 4 4"/><path d="M5 13v5a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-5"/></symbol>
+      <symbol id="icon-send" viewBox="0 0 24 24"><path d="M4 12 20 4l-6 16-3-6-7-2Z"/></symbol>
+      <symbol id="icon-close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
+      <symbol id="icon-shuffle" viewBox="0 0 24 24"><path d="M17 4h3v3"/><path d="M20 4 4 20"/><path d="M17 20h3v-3"/><path d="m14 14 6 6"/><path d="M4 4l3 3"/></symbol>
+      <symbol id="icon-heart" viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-9.5A4 4 0 0 1 12 7a4 4 0 0 1 7 3.5C19 15.6 12 20 12 20Z"/></symbol>
+      <symbol id="icon-arrow-down" viewBox="0 0 24 24"><path d="M12 5v14"/><path d="m6 13 6 6 6-6"/></symbol>
+      <symbol id="icon-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></symbol>
+      <symbol id="icon-server" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="7" rx="2"/><rect x="3" y="13" width="18" height="7" rx="2"/><path d="M7 7.5h.01M7 16.5h.01"/></symbol>
+      <symbol id="icon-image" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="1.6"/><path d="m4 18 5-5 4 4 3-3 4 4"/></symbol>
+      <symbol id="icon-camera" viewBox="0 0 24 24"><path d="M4 8h3l1.6-2h6.8L17 8h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1Z"/><circle cx="12" cy="13" r="3.4"/></symbol>
+      <symbol id="icon-mic" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><path d="M12 18v3"/></symbol>
+      <symbol id="icon-stop" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2"/></symbol>
+      <symbol id="icon-download" viewBox="0 0 24 24"><path d="M12 4v11"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></symbol>
+      <symbol id="icon-trash" viewBox="0 0 24 24"><path d="M5 7h14"/><path d="M9 7V5h6v2"/><path d="M7 7l1 13h8l1-13"/></symbol>
+      <symbol id="icon-code" viewBox="0 0 24 24"><path d="m9 8-4 4 4 4"/><path d="m15 8 4 4-4 4"/></symbol>
+      <symbol id="icon-upload" viewBox="0 0 24 24"><path d="M12 19V8"/><path d="m7 12 5-5 5 5"/><path d="M5 20h14"/></symbol>
+      <symbol id="icon-check" viewBox="0 0 24 24"><path d="m5 13 4 4 10-11"/></symbol>
+      <symbol id="icon-play" viewBox="0 0 24 24"><path d="M7 5l12 7-12 7V5Z"/></symbol>
+      <symbol id="icon-pause" viewBox="0 0 24 24"><path d="M8 5v14M16 5v14"/></symbol>
+    </defs>
+  </svg>
+
+  <div class="app" id="app">
+
+    <!-- ============ welcome ============ -->
+    <section class="screen screen--welcome" id="welcomeScreen" aria-labelledby="welcomeTitle">
+      <div class="welcome">
+        <header class="welcome__hero">
+          <svg class="mascot mascot--hero" aria-hidden="true"><use href="#mochiMascot"/></svg>
+          <h1 class="wordmark" id="welcomeTitle">mochi</h1>
+          <p class="welcome__tagline">a tiny, yours-to-shape place to talk</p>
+        </header>
+
+        <form class="card setup" id="setupForm" novalidate>
+          <div class="field">
+            <label class="field__label" for="setupName">what should we call you?</label>
+            <input class="text-input" id="setupName" name="name" type="text" maxlength="24" autocomplete="nickname" placeholder="strawberry">
+          </div>
+
+          <fieldset class="field field--plain">
+            <legend class="field__label">pick a little face</legend>
+            <div class="emoji-grid" id="setupAvatars" role="group" aria-label="Choose your avatar"></div>
+          </fieldset>
+
+          <div class="field">
+            <label class="field__label" for="setupRoom">room key</label>
+            <div class="input-row">
+              <input class="text-input" id="setupRoom" name="room" type="text" maxlength="32" autocapitalize="none" spellcheck="false" placeholder="mint-2048">
+              <button class="icon-button icon-button--soft" id="rollRoom" type="button" aria-label="Generate a room key">
+                <svg class="icon" aria-hidden="true"><use href="#icon-shuffle"/></svg>
+              </button>
+            </div>
+            <p class="hint">use the exact same key on both phones</p>
+          </div>
+
+          <div class="field">
+            <label class="field__label" for="setupServer">server address</label>
+            <input class="text-input text-input--mono" id="setupServer" name="server" type="url" inputmode="url" maxlength="300" autocomplete="off" spellcheck="false" placeholder="ws://192.168.1.20:8787">
+            <p class="hint" id="serverHint">on Wi-Fi: your computer's local IP · emulator: <code>ws://10.0.2.2:8787</code></p>
+          </div>
+
+          <button class="primary-button" type="submit">open our little world</button>
+          <p class="form-error" id="setupError" role="alert"></p>
+        </form>
+
+        <p class="welcome__footnote">no accounts · no ads · your own server</p>
+      </div>
+    </section>
+
+    <!-- ============ chat ============ -->
+    <section class="screen screen--chat" id="chatScreen" hidden aria-label="Chat">
+      <header class="topbar">
+        <div class="topbar__identity">
+          <span class="avatar avatar--header" id="headerAvatar" aria-hidden="true">🍓</span>
+          <div class="topbar__copy">
+            <h1 class="topbar__title" id="roomTitle">mochi</h1>
+            <p class="connection" id="connectionText" data-state="connecting">
+              <span class="connection__dot" aria-hidden="true"></span>
+              <span id="connectionLabel">connecting…</span>
+            </p>
+          </div>
+        </div>
+        <div class="topbar__actions">
+          <button class="icon-button" id="shareBtn" type="button" aria-label="Share this room">
+            <svg class="icon" aria-hidden="true"><use href="#icon-share"/></svg>
+          </button>
+          <button class="icon-button" id="settingsBtn" type="button" aria-label="Open settings">
+            <svg class="icon" aria-hidden="true"><use href="#icon-settings"/></svg>
+          </button>
+        </div>
+      </header>
+
+      <div class="offline-notice" id="offlineNotice" role="status" hidden>
+        <span id="offlineNoticeText">the server is taking a nap</span>
+        <button class="text-button" id="retryBtn" type="button">retry</button>
+      </div>
+
+      <main class="messages" id="messages" tabindex="-1">
+        <div class="empty-state" id="emptyState">
+          <svg class="mascot mascot--empty" aria-hidden="true"><use href="#mochiMascot"/></svg>
+          <p class="empty-state__title">it's quiet in here</p>
+          <p class="empty-state__copy">send the first little message</p>
+        </div>
+        <div class="message-list" id="messageList" role="log" aria-live="polite"></div>
+      </main>
+
+      <button class="new-messages" id="newMessages" type="button" data-visible="false">new messages
+        <svg class="icon icon--tiny" aria-hidden="true"><use href="#icon-arrow-down"/></svg>
+      </button>
+      <p class="typing" id="typing" aria-live="polite"></p>
+
+      <div class="recorder" id="recorderBar" hidden>
+        <span class="recorder__dot" aria-hidden="true"></span>
+        <span class="recorder__time" id="recorderTime">0:00</span>
+        <span class="recorder__hint">recording a voice note…</span>
+        <button class="text-button" id="recorderCancel" type="button">cancel</button>
+        <button class="primary-button primary-button--small" id="recorderSend" type="button">send</button>
+      </div>
+
+      <form class="composer" id="composer">
+        <div class="composer__field">
+          <button class="composer__icon" id="attachBtn" type="button" aria-label="Add photo or video">
+            <svg class="icon" aria-hidden="true"><use href="#icon-image"/></svg>
+          </button>
+          <button class="composer__icon" id="cameraBtn" type="button" aria-label="Take a photo">
+            <svg class="icon" aria-hidden="true"><use href="#icon-camera"/></svg>
+          </button>
+          <textarea class="composer__input" id="messageInput" rows="1" maxlength="2000" enterkeyhint="send" aria-label="Write a message" placeholder="say something…"></textarea>
+          <button class="composer__icon" id="micBtn" type="button" aria-label="Record a voice note">
+            <svg class="icon" aria-hidden="true"><use href="#icon-mic"/></svg>
+          </button>
+        </div>
+        <button class="send-button" id="sendBtn" type="submit" aria-label="Send message" disabled>
+          <svg class="icon" aria-hidden="true"><use href="#icon-send"/></svg>
+        </button>
+      </form>
+
+      <input type="file" id="mediaInput" accept="image/*,video/*" multiple hidden>
+      <input type="file" id="cameraInput" accept="image/*" capture="environment" hidden>
+      <input type="file" id="selfieInput" accept="image/*" capture="user" hidden>
+    </section>
+  </div>
+
+  <!-- ============ settings ============ -->
+  <div class="scrim" id="scrim" hidden></div>
+  <aside class="sheet" id="settingsSheet" role="dialog" aria-modal="true" aria-labelledby="settingsTitle" hidden>
+    <div class="sheet__grab" aria-hidden="true"></div>
+    <header class="sheet__header">
+      <div>
+        <p class="kicker">make it yours</p>
+        <h2 class="sheet__title" id="settingsTitle">little details</h2>
+      </div>
+      <button class="icon-button" id="closeSettings" type="button" aria-label="Close settings">
+        <svg class="icon" aria-hidden="true"><use href="#icon-close"/></svg>
+      </button>
+    </header>
+
+    <div class="sheet__body">
+      <section class="settings-group" aria-labelledby="youTitle">
+        <h3 class="settings-group__title" id="youTitle">you</h3>
+        <div class="field">
+          <label class="field__label" for="settingsName">display name</label>
+          <input class="text-input" id="settingsName" type="text" maxlength="24" autocomplete="nickname">
+        </div>
+        <div class="field">
+          <span class="field__label">profile photo</span>
+          <div class="photo-row">
+            <span class="avatar avatar--preview" id="avatarPhotoPreview" aria-hidden="true">🍓</span>
+            <label class="ghost-button">
+              <svg class="icon icon--tiny" aria-hidden="true"><use href="#icon-upload"/></svg> upload
+              <input type="file" id="avatarUpload" accept="image/*" hidden>
+            </label>
+            <button class="ghost-button ghost-button--quiet" id="avatarClear" type="button">remove</button>
+          </div>
+        </div>
+        <fieldset class="field field--plain">
+          <legend class="field__label">or pick a face</legend>
+          <div class="emoji-grid" id="settingsAvatars" role="group" aria-label="Choose your avatar"></div>
+        </fieldset>
+      </section>
+
+      <section class="settings-group" aria-labelledby="roomTitle2">
+        <h3 class="settings-group__title" id="roomTitle2">our room</h3>
+        <div class="field">
+          <label class="field__label" for="settingsPeerName">name for your friend</label>
+          <input class="text-input" id="settingsPeerName" type="text" maxlength="24" placeholder="their nickname">
+          <p class="hint">rename how they appear on your phone</p>
+        </div>
+        <div class="field">
+          <label class="field__label" for="settingsRoom">room key</label>
+          <div class="input-row">
+            <input class="text-input" id="settingsRoom" type="text" maxlength="32" autocapitalize="none" spellcheck="false">
+            <button class="icon-button icon-button--soft" id="shareRoomBtn" type="button" aria-label="Share room details">
+              <svg class="icon" aria-hidden="true"><use href="#icon-share"/></svg>
+            </button>
+          </div>
+          <p class="hint">changing this moves you to another room</p>
+        </div>
+        <div class="field">
+          <label class="field__label" for="settingsServer">server address</label>
+          <input class="text-input text-input--mono" id="settingsServer" type="url" inputmode="url" maxlength="300" spellcheck="false">
+        </div>
+      </section>
+
+      <section class="settings-group" aria-labelledby="paletteTitle">
+        <h3 class="settings-group__title" id="paletteTitle">theme</h3>
+        <div class="theme-grid" id="themeGrid" role="group" aria-label="Theme"></div>
+        <div class="field field--plain">
+          <span class="field__label">accent</span>
+          <div class="swatch-row" id="accentRow" role="group" aria-label="Accent color"></div>
+          <label class="accent-custom">
+            <input type="color" id="customAccent" value="#c4623f" aria-label="Choose a custom accent color">
+            custom color
+          </label>
+        </div>
+      </section>
+
+      <section class="settings-group" aria-labelledby="recipeTitle">
+        <h3 class="settings-group__title" id="recipeTitle">recipes</h3>
+        <p class="settings-group__copy">one tap dresses the whole app. or drop your own: paste a recipe below, or load a .json / .css file from your phone.</p>
+        <div class="recipe-grid" id="recipePresets" role="group" aria-label="Recipes"></div>
+        <p class="recipe-status" id="recipeStatus">no recipe applied yet</p>
+        <div class="field">
+          <label class="field__label" for="recipeInput">paste a recipe or css</label>
+          <textarea class="text-input text-input--mono" id="recipeInput" rows="4" spellcheck="false" placeholder='{"kind":"mochi-recipe","name":"my look","theme":"rose","accent":"#ff5c8a","css":".topbar__title::after{content:\" ♡\";}"}'></textarea>
+          <div class="studio-actions">
+            <button class="ghost-button" id="recipeApply" type="button">
+              <svg class="icon icon--tiny" aria-hidden="true"><use href="#icon-check"/></svg> apply
+            </button>
+            <label class="ghost-button">
+              <svg class="icon icon--tiny" aria-hidden="true"><use href="#icon-upload"/></svg> load file
+              <input type="file" id="recipeFileInput" accept=".json,.mochi,.css,.txt,application/json,text/css,text/plain" hidden>
+            </label>
+            <button class="ghost-button" id="recipeExport" type="button">
+              <svg class="icon icon--tiny" aria-hidden="true"><use href="#icon-download"/></svg> save my look
+            </button>
+            <button class="ghost-button ghost-button--quiet" id="recipeClear" type="button">clear</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="settings-group" aria-labelledby="studioTitle">
+        <h3 class="settings-group__title" id="studioTitle">theme studio</h3>
+        <p class="settings-group__copy">tweak every color, drop in your own background, or paste custom CSS.</p>
+        <div class="token-grid" id="studioTokens"></div>
+        <div class="studio-actions">
+          <button class="ghost-button" id="studioReset" type="button">reset colors</button>
+          <button class="ghost-button" id="themeExport" type="button">
+            <svg class="icon icon--tiny" aria-hidden="true"><use href="#icon-download"/></svg> export
+          </button>
+          <label class="ghost-button">
+            <svg class="icon icon--tiny" aria-hidden="true"><use href="#icon-upload"/></svg> import
+            <input type="file" id="themeImportFile" accept=".json,application/json" hidden>
+          </label>
+        </div>
+        <div class="field">
+          <span class="field__label">background photo</span>
+          <div class="studio-actions">
+            <label class="ghost-button">
+              <svg class="icon icon--tiny" aria-hidden="true"><use href="#icon-image"/></svg> choose
+              <input type="file" id="bgUpload" accept="image/*" hidden>
+            </label>
+            <button class="ghost-button ghost-button--quiet" id="bgClear" type="button">remove</button>
+          </div>
+          <label class="slider">
+            <span>dim</span>
+            <input type="range" id="bgOpacity" min="0" max="0.9" step="0.02" value="0.16">
+            <output id="bgOpacityValue">16%</output>
+          </label>
+          <label class="slider">
+            <span>blur</span>
+            <input type="range" id="bgBlur" min="0" max="20" step="1" value="2">
+            <output id="bgBlurValue">2px</output>
+          </label>
+        </div>
+        <div class="field">
+          <label class="field__label" for="customCss">custom css</label>
+          <textarea class="text-input text-input--mono" id="customCss" rows="4" spellcheck="false" placeholder=".message__bubble { border-radius: 10px; }"></textarea>
+          <div class="studio-actions">
+            <button class="ghost-button" id="cssApply" type="button">
+              <svg class="icon icon--tiny" aria-hidden="true"><use href="#icon-code"/></svg> apply css
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section class="settings-group" aria-labelledby="lookTitle">
+        <h3 class="settings-group__title" id="lookTitle">shape &amp; paper</h3>
+        <div class="field">
+          <span class="field__label">font</span>
+          <div class="segmented" id="fontControl" role="group" aria-label="Font">
+            <button type="button" data-value="editorial">editorial</button>
+            <button type="button" data-value="friendly">friendly</button>
+            <button type="button" data-value="modern">modern</button>
+          </div>
+        </div>
+        <div class="field">
+          <span class="field__label">bubble shape</span>
+          <div class="segmented" id="shapeControl" role="group" aria-label="Bubble shape">
+            <button type="button" data-value="soft">soft</button>
+            <button type="button" data-value="round">round</button>
+            <button type="button" data-value="pillowy">pillowy</button>
+            <button type="button" data-value="sharp">sharp</button>
+          </div>
+        </div>
+        <div class="field">
+          <span class="field__label">avatar shape</span>
+          <div class="segmented" id="avatarShapeControl" role="group" aria-label="Avatar shape">
+            <button type="button" data-value="squircle">squircle</button>
+            <button type="button" data-value="circle">circle</button>
+          </div>
+        </div>
+        <div class="field">
+          <span class="field__label">background doodles</span>
+          <div class="segmented segmented--four" id="patternControl" role="group" aria-label="Background pattern">
+            <button type="button" data-value="none">none</button>
+            <button type="button" data-value="dots">dots</button>
+            <button type="button" data-value="stars">stars</button>
+            <button type="button" data-value="hearts">hearts</button>
+          </div>
+        </div>
+        <div class="field">
+          <span class="field__label">text size</span>
+          <div class="segmented" id="sizeControl" role="group" aria-label="Text size">
+            <button type="button" data-value="s">small</button>
+            <button type="button" data-value="m">cozy</button>
+            <button type="button" data-value="l">large</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="settings-group" aria-labelledby="feelTitle">
+        <h3 class="settings-group__title" id="feelTitle">behaviour</h3>
+        <div class="switch-list">
+          <label class="switch">
+            <span class="switch__copy"><span>timestamps</span><small>show a time under each bubble</small></span>
+            <input type="checkbox" id="toggleTimestamps">
+            <span class="switch__ui" aria-hidden="true"></span>
+          </label>
+          <label class="switch">
+            <span class="switch__copy"><span>typing indicator</span><small>see when they're typing</small></span>
+            <input type="checkbox" id="toggleTyping">
+            <span class="switch__ui" aria-hidden="true"></span>
+          </label>
+          <label class="switch">
+            <span class="switch__copy"><span>read receipts</span><small>mark messages as seen</small></span>
+            <input type="checkbox" id="toggleReceipts">
+            <span class="switch__ui" aria-hidden="true"></span>
+          </label>
+          <label class="switch">
+            <span class="switch__copy"><span>send with enter</span><small>off means enter adds a new line</small></span>
+            <input type="checkbox" id="toggleEnter">
+            <span class="switch__ui" aria-hidden="true"></span>
+          </label>
+          <label class="switch">
+            <span class="switch__copy"><span>group messages</span><small>cluster messages from one person</small></span>
+            <input type="checkbox" id="toggleGroup">
+            <span class="switch__ui" aria-hidden="true"></span>
+          </label>
+          <label class="switch">
+            <span class="switch__copy"><span>paper note texture</span><small>subtle grain on bubbles</small></span>
+            <input type="checkbox" id="toggleNote">
+            <span class="switch__ui" aria-hidden="true"></span>
+          </label>
+          <label class="switch">
+            <span class="switch__copy"><span>soft sounds</span><small>a gentle pop on new messages</small></span>
+            <input type="checkbox" id="toggleSounds">
+            <span class="switch__ui" aria-hidden="true"></span>
+          </label>
+          <label class="switch">
+            <span class="switch__copy"><span>haptics</span><small>a tiny buzz on send</small></span>
+            <input type="checkbox" id="toggleHaptics">
+            <span class="switch__ui" aria-hidden="true"></span>
+          </label>
+          <label class="switch">
+            <span class="switch__copy"><span>compact mode</span><small>fit a little more on screen</small></span>
+            <input type="checkbox" id="toggleCompact">
+            <span class="switch__ui" aria-hidden="true"></span>
+          </label>
+          <label class="switch">
+            <span class="switch__copy"><span>calm motion</span><small>turn off bobbing and floating hearts</small></span>
+            <input type="checkbox" id="toggleCalm">
+            <span class="switch__ui" aria-hidden="true"></span>
+          </label>
+        </div>
+        <div class="field">
+          <span class="field__label">clock</span>
+          <div class="segmented segmented--four" id="timeFormatControl" role="group" aria-label="Clock">
+            <button type="button" data-value="auto">auto</button>
+            <button type="button" data-value="12">12h</button>
+            <button type="button" data-value="24">24h</button>
+            <button type="button" data-value="off">off</button>
+          </div>
+        </div>
+        <label class="slider">
+          <span>sound volume</span>
+          <input type="range" id="soundVolume" min="0" max="1" step="0.05" value="0.5">
+        </label>
+      </section>
+
+      <section class="settings-group" aria-labelledby="mediaTitle">
+        <h3 class="settings-group__title" id="mediaTitle">photos, video &amp; voice</h3>
+        <div class="switch-list">
+          <label class="switch">
+            <span class="switch__copy"><span>autoplay media</span><small>play videos and voice notes automatically</small></span>
+            <input type="checkbox" id="toggleAutoplay">
+            <span class="switch__ui" aria-hidden="true"></span>
+          </label>
+        </div>
+        <div class="field">
+          <span class="field__label">download media</span>
+          <div class="segmented" id="mediaAutoControl" role="group" aria-label="Download media">
+            <button type="button" data-value="always">always</button>
+            <button type="button" data-value="wifi">wi-fi only</button>
+            <button type="button" data-value="never">tap to load</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="settings-group" aria-labelledby="backupTitle">
+        <h3 class="settings-group__title" id="backupTitle">backup</h3>
+        <p class="settings-group__copy">save all your settings, theme and custom CSS to a file, or load one back.</p>
+        <div class="studio-actions">
+          <button class="ghost-button" id="settingsExport" type="button">
+            <svg class="icon icon--tiny" aria-hidden="true"><use href="#icon-download"/></svg> export settings
+          </button>
+          <label class="ghost-button">
+            <svg class="icon icon--tiny" aria-hidden="true"><use href="#icon-upload"/></svg> import settings
+            <input type="file" id="settingsImportFile" accept=".json,application/json" hidden>
+          </label>
+        </div>
+      </section>
+
+      <section class="settings-group settings-group--danger" aria-labelledby="resetTitle">
+        <h3 class="settings-group__title" id="resetTitle">start over</h3>
+        <p class="settings-group__copy">leaves this room, forgets your local history, and takes you back to the welcome screen.</p>
+        <button class="danger-button" id="resetBtn" type="button">forget everything</button>
+      </section>
+    </div>
+
+    <footer class="sheet__footer">
+      <button class="primary-button" id="saveSettings" type="button">
+        <span id="saveSettingsLabel">save &amp; reconnect</span>
+      </button>
+    </footer>
+  </aside>
+
+  <div class="viewer" id="mediaViewer" role="dialog" aria-modal="true" aria-label="Media viewer" hidden>
+    <button class="viewer__close icon-button" id="mediaViewerClose" type="button" aria-label="Close viewer">
+      <svg class="icon" aria-hidden="true"><use href="#icon-close"/></svg>
+    </button>
+    <div class="viewer__stage" id="mediaViewerStage"></div>
+  </div>
+
+  <div class="reaction-bar" id="reactionBar" role="menu" aria-label="React to message" hidden></div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <div class="heart-layer" id="heartLayer" aria-hidden="true"></div>
+
+  <script src="core.js"></script>
+  <script src="recipes.js"></script>
+  <script src="look.js"></script>
+  <script src="chat.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

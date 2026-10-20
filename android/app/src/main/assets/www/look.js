@@ -74,6 +74,11 @@ function applyLook() {
 }
 
 function applyBackgroundImage() {
+  if (state.bgGradient) {
+    document.body.style.backgroundImage = state.bgGradient;
+  } else {
+    document.body.style.removeProperty("background-image");
+  }
   if (!ui.bgPhoto) return;
   if (state.bgImage && state.bgImage.startsWith("data:image")) {
     ui.bgPhoto.style.backgroundImage = "url(" + state.bgImage + ")";
@@ -87,7 +92,10 @@ function applyBackgroundImage() {
 }
 
 function applyCustomCss() {
-  if (ui.customCssStyle) ui.customCssStyle.textContent = state.customCss || "";
+  if (!ui.customCssStyle) return;
+  ui.customCssStyle.textContent = [state.recipeCss, state.customCss]
+    .filter((block) => typeof block === "string" && block.trim())
+    .join("\n");
 }
 
 /* ------------------------------------------------------------------ *
@@ -261,12 +269,204 @@ function syncLookControls() {
   if (ui.bgOpacity) ui.bgOpacity.value = String(state.bgOpacity);
   if (ui.bgBlur) ui.bgBlur.value = String(state.bgBlur);
   syncSliderOutputs();
+  syncRecipeCards();
   if (ui.customCss) ui.customCss.value = state.customCss || "";
 }
 
 function syncSliderOutputs() {
   if (ui.bgOpacityValue) ui.bgOpacityValue.textContent = Math.round(state.bgOpacity * 100) + "%";
   if (ui.bgBlurValue) ui.bgBlurValue.textContent = Math.round(state.bgBlur) + "px";
+}
+
+/* ------------------------------------------------------------------ *
+ *  recipes: small look bundles you can drop in
+ * ------------------------------------------------------------------ */
+
+function builtinRecipes() {
+  return typeof RECIPES !== "undefined" && Array.isArray(RECIPES) ? RECIPES : [];
+}
+
+function normalizeRecipe(raw) {
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) return null;
+  const recipe = {};
+  if (Object.prototype.hasOwnProperty.call(raw, "id")) recipe.id = String(raw.id || "").slice(0, 40);
+  if (Object.prototype.hasOwnProperty.call(raw, "name")) recipe.name = String(raw.name || "").slice(0, 40);
+  if (Object.prototype.hasOwnProperty.call(raw, "description")) {
+    recipe.description = String(raw.description || "").slice(0, 120);
+  }
+  if (THEMES.some((theme) => theme.id === raw.theme)) recipe.theme = raw.theme;
+  if (safeHex(raw.accent)) recipe.accent = safeHex(raw.accent);
+  if (FONTS.some((font) => font.id === raw.fontChoice)) recipe.fontChoice = raw.fontChoice;
+  if (["soft", "round", "pillowy", "sharp"].includes(raw.shape)) recipe.shape = raw.shape;
+  if (["hearts", "dots", "stars", "none"].includes(raw.pattern)) recipe.pattern = raw.pattern;
+  if (["s", "m", "l"].includes(raw.textSize)) recipe.textSize = raw.textSize;
+  if (["squircle", "circle"].includes(raw.avatarShape)) recipe.avatarShape = raw.avatarShape;
+  if (typeof raw.noteTexture === "boolean") recipe.noteTexture = raw.noteTexture;
+
+  const tokens = sanitizeThemeOverrides(raw.tokens || raw.customTheme);
+  if (Object.keys(tokens).length) recipe.customTheme = tokens;
+
+  if (Object.prototype.hasOwnProperty.call(raw, "gradient")) {
+    const gradient = sanitizeGradient(raw.gradient);
+    if (gradient) recipe.gradient = gradient;
+  }
+  if (typeof raw.image === "string" && raw.image.startsWith("data:image")) recipe.image = raw.image;
+  if (raw.bgOpacity != null) recipe.bgOpacity = clamp(Number(raw.bgOpacity) || 0, 0, 1);
+  if (raw.bgBlur != null) recipe.bgBlur = clamp(Number(raw.bgBlur) || 0, 0, 20);
+  if (Object.prototype.hasOwnProperty.call(raw, "css")) {
+    recipe.css = typeof raw.css === "string" ? raw.css.slice(0, 8000) : "";
+  }
+  if (typeof raw.avatar === "string" && raw.avatar.trim()) recipe.avatar = raw.avatar.trim().slice(0, 8);
+
+  return Object.keys(recipe).length ? recipe : null;
+}
+
+function applyRecipe(raw, fallbackLabel) {
+  const recipe = normalizeRecipe(raw);
+  if (!recipe) {
+    showToast("that recipe didn't look right");
+    return false;
+  }
+
+  if (recipe.theme) state.theme = recipe.theme;
+  if (recipe.accent) state.accent = recipe.accent;
+  if (recipe.customTheme) state.customTheme = recipe.customTheme;
+  else if (recipe.theme || recipe.accent) state.customTheme = {};
+
+  if (recipe.fontChoice) state.fontChoice = recipe.fontChoice;
+  if (recipe.shape) state.shape = recipe.shape;
+  if (recipe.pattern) state.pattern = recipe.pattern;
+  if (recipe.textSize) state.textSize = recipe.textSize;
+  if (recipe.avatarShape) state.avatarShape = recipe.avatarShape;
+  if (typeof recipe.noteTexture === "boolean") state.noteTexture = recipe.noteTexture;
+
+  if (recipe.gradient || recipe.image) {
+    state.bgGradient = recipe.gradient || "";
+    state.bgImage = recipe.image || "";
+    if (recipe.bgOpacity != null) state.bgOpacity = recipe.bgOpacity;
+    if (recipe.bgBlur != null) state.bgBlur = recipe.bgBlur;
+  }
+
+  if (Object.prototype.hasOwnProperty.call(recipe, "css")) state.recipeCss = recipe.css;
+  if (recipe.avatar) {
+    state.avatar = recipe.avatar;
+    state.avatarImage = "";
+  }
+
+  state.recipeId = recipe.id || "";
+  state.recipeName = recipe.name || fallbackLabel || "custom look";
+
+  persistState();
+  applyLook();
+  syncLookControls();
+  refreshAvatarPreview();
+  if (typeof updateHeader === "function") updateHeader();
+  rerenderMessages();
+  showToast("recipe applied: " + state.recipeName);
+  haptic(4);
+  return true;
+}
+
+function recipePalette(recipe) {
+  const base = themeById(recipe.theme || "paper");
+  const tokens = recipe.customTheme || {};
+  return {
+    bg: tokens.bg || base.bg,
+    bg2: tokens.bg2 || base.bg2,
+    accent: recipe.accent || tokens.accent || base.accent
+  };
+}
+
+function renderRecipes() {
+  if (!ui.recipePresets) return;
+  ui.recipePresets.innerHTML = "";
+  for (const recipe of builtinRecipes()) {
+    const palette = recipePalette(recipe);
+    const card = makeEl("button", "recipe-card");
+    card.type = "button";
+    card.dataset.recipe = recipe.id || recipe.name;
+    card.setAttribute("aria-label", "Apply recipe: " + recipe.name);
+
+    const swatch = makeEl("span", "recipe-card__swatch");
+    swatch.style.background = recipe.gradient
+      || "linear-gradient(145deg, " + palette.bg + ", " + palette.bg2 + ")";
+    const dot = makeEl("span", "recipe-card__dot");
+    dot.style.background = palette.accent;
+    swatch.appendChild(dot);
+
+    card.appendChild(swatch);
+    card.appendChild(makeEl("span", "recipe-card__name", recipe.name));
+    card.appendChild(makeEl("span", "recipe-card__desc", recipe.description || ""));
+    ui.recipePresets.appendChild(card);
+  }
+  syncRecipeCards();
+}
+
+function syncRecipeCards() {
+  for (const card of document.querySelectorAll(".recipe-card[data-recipe]")) {
+    card.setAttribute(
+      "aria-pressed",
+      state.recipeId && card.dataset.recipe === state.recipeId ? "true" : "false"
+    );
+  }
+  updateRecipeStatus();
+}
+
+function updateRecipeStatus() {
+  if (!ui.recipeStatus) return;
+  ui.recipeStatus.textContent = state.recipeName
+    ? "applied: " + state.recipeName
+    : "no recipe applied yet";
+}
+
+function currentRecipe() {
+  return {
+    kind: "mochi-recipe",
+    version: 1,
+    name: state.recipeName || "my look",
+    theme: state.theme,
+    accent: state.accent,
+    customTheme: state.customTheme,
+    fontChoice: state.fontChoice,
+    shape: state.shape,
+    pattern: state.pattern,
+    textSize: state.textSize,
+    avatarShape: state.avatarShape,
+    noteTexture: state.noteTexture,
+    gradient: state.bgGradient,
+    image: state.bgImage || undefined,
+    bgOpacity: state.bgOpacity,
+    bgBlur: state.bgBlur,
+    avatar: state.avatar,
+    css: state.recipeCss
+  };
+}
+
+function cleanRecipeLabel(label) {
+  return String(label || "")
+    .replace(/\.(json|mochi|css|txt)$/i, "")
+    .replace(/[-_]+/g, " ")
+    .trim()
+    .slice(0, 40) || "custom look";
+}
+
+function parseRecipeText(text, label) {
+  const value = String(text || "").trim();
+  if (!value) {
+    showToast("paste a recipe or some css first");
+    return false;
+  }
+  if (value.charAt(0) === "{") {
+    let bundle;
+    try {
+      bundle = JSON.parse(value);
+    } catch (error) {
+      showToast("that json has a typo");
+      return false;
+    }
+    return applyRecipe(bundle, label ? cleanRecipeLabel(label) : "");
+  }
+  return applyRecipe({ name: label ? cleanRecipeLabel(label) : "css drop", css: value }, label);
 }
 
 /* ------------------------------------------------------------------ *
@@ -323,6 +523,11 @@ function bindLookEvents() {
       if (!card) return;
       state.theme = card.dataset.theme;
       state.accent = "";
+      state.customTheme = {};
+      state.recipeId = "";
+      state.recipeName = "";
+      state.recipeCss = "";
+      state.bgGradient = "";
       persistState();
       applyLook();
       syncLookControls();
@@ -543,5 +748,65 @@ function bindLookEvents() {
 
   if (prefersReduced && prefersReduced.addEventListener) {
     prefersReduced.addEventListener("change", applyLook);
+  }
+
+  bindRecipes();
+}
+
+function bindRecipes() {
+  if (ui.recipePresets) {
+    ui.recipePresets.addEventListener("click", (event) => {
+      const card = event.target.closest("[data-recipe]");
+      if (!card) return;
+      const recipe = builtinRecipes().find(
+        (item) => (item.id || item.name) === card.dataset.recipe
+      );
+      if (recipe) applyRecipe(recipe);
+    });
+  }
+
+  if (ui.recipeApply && ui.recipeInput) {
+    ui.recipeApply.addEventListener("click", () => {
+      if (parseRecipeText(ui.recipeInput.value, "")) ui.recipeInput.value = "";
+    });
+  }
+
+  if (ui.recipeFileInput) {
+    ui.recipeFileInput.addEventListener("change", async () => {
+      const file = ui.recipeFileInput.files && ui.recipeFileInput.files[0];
+      ui.recipeFileInput.value = "";
+      if (!file) return;
+      if (file.size > 1024 * 1024) {
+        showToast("that recipe file is a bit big");
+        return;
+      }
+      try {
+        const text = await file.text();
+        parseRecipeText(text, file.name);
+      } catch (error) {
+        showToast("could not read that file");
+      }
+    });
+  }
+
+  if (ui.recipeExport) {
+    ui.recipeExport.addEventListener("click", () => {
+      downloadText("mochi-recipe.json", JSON.stringify(currentRecipe(), null, 2));
+      showToast("recipe saved");
+    });
+  }
+
+  if (ui.recipeClear) {
+    ui.recipeClear.addEventListener("click", () => {
+      state.recipeId = "";
+      state.recipeName = "";
+      state.recipeCss = "";
+      state.bgGradient = "";
+      persistState();
+      applyLook();
+      syncLookControls();
+      showToast("recipe cleared");
+      haptic(4);
+    });
   }
 }

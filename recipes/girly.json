@@ -1,0 +1,29 @@
+{
+  "kind": "mochi-recipe",
+  "version": 1,
+  "id": "girly",
+  "name": "strawberry milk",
+  "description": "strawberries, hearts, soft pink",
+  "theme": "rose",
+  "accent": "#e75a8c",
+  "fontChoice": "friendly",
+  "shape": "pillowy",
+  "pattern": "hearts",
+  "textSize": "m",
+  "avatarShape": "squircle",
+  "noteTexture": true,
+  "avatar": "🍓",
+  "customTheme": {
+    "bg": "#fff5f8",
+    "bg2": "#ffe9f1",
+    "surface": "#ffffff",
+    "surface2": "#fff7fa",
+    "ink": "#3a2230",
+    "ink2": "#7a5768",
+    "ink3": "#b08fa0",
+    "line": "#f7d9e6",
+    "accent": "#e75a8c"
+  },
+  "gradient": "linear-gradient(155deg, #fff5f8 0%, #ffe9f1 55%, #ffeef5 100%)",
+  "css": ".topbar__title::after {\n  content: \" ♡\";\n  color: var(--accent);\n}\n.message__bubble {\n  border-width: 1.5px;\n}\n.day-divider {\n  background: var(--accent-soft);\n  border-color: transparent;\n}"
+}

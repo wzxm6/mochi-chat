@@ -1,0 +1,29 @@
+{
+  "kind": "mochi-recipe",
+  "version": 1,
+  "id": "love",
+  "name": "rosy love",
+  "description": "warm roses and a heartbeat",
+  "theme": "rose",
+  "accent": "#d6455d",
+  "fontChoice": "editorial",
+  "shape": "pillowy",
+  "pattern": "hearts",
+  "textSize": "m",
+  "avatarShape": "circle",
+  "noteTexture": true,
+  "avatar": "🌹",
+  "customTheme": {
+    "bg": "#fff4f4",
+    "bg2": "#ffe4e6",
+    "surface": "#ffffff",
+    "surface2": "#fff7f7",
+    "ink": "#331d22",
+    "ink2": "#7a4c55",
+    "ink3": "#b48a91",
+    "line": "#f6d2d6",
+    "accent": "#d6455d"
+  },
+  "gradient": "radial-gradient(120% 120% at 50% 0%, #fff4f4 0%, #ffe4e6 55%, #ffe9ef 100%)",
+  "css": ".topbar__title::after {\n  content: \" ♥\";\n  color: var(--accent);\n}\n.message--mine .message__bubble {\n  box-shadow: 0 12px 26px -20px rgba(214, 69, 93, .75);\n}"
+}

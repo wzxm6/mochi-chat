@@ -174,6 +174,8 @@ Open the settings sheet (the two-line icon in the header):
 - **Theme**: 8 balanced presets — warm paper, soft sage, fired clay, quiet
   slate, dusty rose, graphite, warm ink, deep night — plus an accent row and a
   custom accent color.
+- **Recipes**: five one-tap looks — anime dusk, strawberry milk, noor,
+  rosy love, best friends — or paste/load your own JSON or CSS look.
 - **Theme studio**: recolor every token (background, cards, text, borders,
   accent), choose a **background photo** with dim/blur, write **custom CSS**,
   and **export/import** your theme as a JSON file.
@@ -189,6 +191,25 @@ Open the settings sheet (the two-line icon in the header):
 
 Settings, the last 300 messages, and your theme are cached locally, so the app
 opens with your conversation already on screen.
+
+### Recipes
+
+A recipe is a small JSON file that sets the whole look at once: theme colors,
+accent, font, shape, doodles, background gradient or photo, avatar and extra CSS.
+
+- **Built in** (settings → recipes): `anime dusk`, `strawberry milk`, `noor`
+  (islamic), `rosy love`, `best friends`.
+- **Load your own**: paste a recipe into the box and tap **apply**, or tap
+  **load file** and pick a `.json` / `.mochi` file from your phone. Pasting plain
+  CSS also works — it is applied as a quick custom look.
+- **Share a look**: style the app, tap **save my look**, and send the downloaded
+  `mochi-recipe.json` to the other phone.
+
+Ready-to-drop examples live in [`recipes/`](recipes/) (`anime.json`,
+`girly.json`, `islamic.json`, `love.json`, `friendship.json`), and
+[`recipes/README.md`](recipes/README.md) documents every field. The built-in
+copies live in `android/app/src/main/assets/www/recipes.js` — edit that file and
+rebuild to add more presets.
 
 ### Sending media
 

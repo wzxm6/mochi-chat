@@ -164,6 +164,14 @@ const ui = {
   accentRow: document.getElementById("accentRow"),
   customAccent: document.getElementById("customAccent"),
 
+  recipePresets: document.getElementById("recipePresets"),
+  recipeInput: document.getElementById("recipeInput"),
+  recipeApply: document.getElementById("recipeApply"),
+  recipeFileInput: document.getElementById("recipeFileInput"),
+  recipeExport: document.getElementById("recipeExport"),
+  recipeClear: document.getElementById("recipeClear"),
+  recipeStatus: document.getElementById("recipeStatus"),
+
   studioTokens: document.getElementById("studioTokens"),
   studioReset: document.getElementById("studioReset"),
   themeExport: document.getElementById("themeExport"),
@@ -348,6 +356,10 @@ function defaultState() {
     accent: "",
     customTheme: {},
     customCss: "",
+    recipeId: "",
+    recipeName: "",
+    recipeCss: "",
+    bgGradient: "",
     bgImage: "",
     bgOpacity: 0.16,
     bgBlur: 2,
@@ -414,6 +426,10 @@ function loadState() {
   merged.accent = safeHex(merged.accent);
   merged.customTheme = sanitizeThemeOverrides(merged.customTheme);
   merged.customCss = typeof merged.customCss === "string" ? merged.customCss.slice(0, 8000) : "";
+  merged.recipeId = typeof merged.recipeId === "string" ? merged.recipeId.slice(0, 40) : "";
+  merged.recipeName = typeof merged.recipeName === "string" ? merged.recipeName.slice(0, 40) : "";
+  merged.recipeCss = typeof merged.recipeCss === "string" ? merged.recipeCss.slice(0, 8000) : "";
+  merged.bgGradient = sanitizeGradient(merged.bgGradient);
   merged.bgImage = typeof merged.bgImage === "string" && merged.bgImage.startsWith("data:image") ? merged.bgImage : "";
   merged.bgOpacity = clamp(Number(merged.bgOpacity) || 0, 0, 1);
   merged.bgBlur = clamp(Number(merged.bgBlur) || 0, 0, 20);
@@ -447,6 +463,14 @@ function sanitizeThemeOverrides(raw) {
     if (value) result[token.key] = value;
   }
   return result;
+}
+
+function sanitizeGradient(value) {
+  const raw = typeof value === "string" ? value.trim() : "";
+  if (!raw || raw.length > 500) return "";
+  if (!/^(repeating-)?(linear|radial|conic)-gradient\(/i.test(raw)) return "";
+  if (/url\(|;|\}/i.test(raw)) return "";
+  return raw;
 }
 
 let state = DEMO ? demoState() : loadState();
